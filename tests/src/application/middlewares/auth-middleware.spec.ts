@@ -1,14 +1,27 @@
 import { unauthorized } from "../../../../src/application/helpers";
 import { AuthMiddleware } from "../../../../src/application/middlewares";
+import { Decrypter } from "../../../../src/data";
+
+const makeDecrypterStub = (): Decrypter => {
+	class DecrypterStub implements Decrypter {
+		async decrypt(cipherText: string): Promise<string> {
+			return "token";
+		}
+	}
+	return new DecrypterStub();
+};
 
 interface SutTypes {
 	sut: AuthMiddleware;
+	decrypterStub: Decrypter;
 }
 
 const makeSut = (): SutTypes => {
-	const sut = new AuthMiddleware();
+	const decrypterStub = makeDecrypterStub();
+	const sut = new AuthMiddleware({ decrypter: decrypterStub });
 	return {
-		sut
+		sut,
+		decrypterStub
 	};
 };
 
@@ -18,5 +31,15 @@ describe("AuthMiddleware", () => {
 		const request = {};
 		const httpResponse = await sut.handle(request);
 		expect(httpResponse).toEqual(unauthorized());
+	});
+
+	it("Should call decrypter with correct value", async () => {
+		const { sut, decrypterStub } = makeSut();
+		const decryptSpy = jest.spyOn(decrypterStub, "decrypt");
+		const request = {
+			accessToken: "any_token"
+		};
+		await sut.handle(request);
+		expect(decryptSpy).toBeCalledWith("any_token");
 	});
 });
