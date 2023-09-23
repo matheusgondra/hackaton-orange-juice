@@ -1,5 +1,5 @@
 import { Authentication } from "../../domain";
-import { Validation, badRequest, serverError, unauthorized } from "../helpers";
+import { Validation, badRequest, serverError, success, unauthorized } from "../helpers";
 import { Controller, HttpRequest, HttpResponse } from "../protocols";
 
 export class LoginController implements Controller {
@@ -24,10 +24,7 @@ export class LoginController implements Controller {
 				return unauthorized();
 			}
 
-			return {
-				statusCode: 200,
-				body: {}
-			};
+			return success({ accessToken });
 		} catch (error) {
 			return serverError(error as Error);
 		}
