@@ -34,4 +34,11 @@ describe("DbAuthentication", () => {
 		await sut.auth({ password: "any_password" });
 		expect(loadByNameSpy).toHaveBeenCalledWith("Administrador");
 	});
+
+	it("Should throw if loadAdministratorByNameRepository throws", async () => {
+		const { sut, loadAdministratorByNameRepositoryStub } = makeSut();
+		jest.spyOn(loadAdministratorByNameRepositoryStub, "loadByName").mockRejectedValueOnce(new Error());
+		const promise = sut.auth({ password: "any_password" });
+		await expect(promise).rejects.toThrow();
+	});
 });
