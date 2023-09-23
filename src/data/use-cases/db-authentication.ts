@@ -1,11 +1,13 @@
 import { Authentication } from "../../domain";
-import { LoadAdministratorByNameRepository } from "../protocols/load-administrator-by-name-repository";
+import { LoadAdministratorByNameRepository, HashComparer } from "../protocols";
 
 export class DbAuthentication implements Authentication {
 	private readonly loadAdministratorByNameRepository: LoadAdministratorByNameRepository;
+	private readonly hashComparer: HashComparer;
 
-	constructor({ loadAdministratorByNameRepository: loadAdministratorRepository }: DbAuthentication.Dependecies) {
-		this.loadAdministratorByNameRepository = loadAdministratorRepository;
+	constructor({ loadAdministratorByNameRepository, hashComparer }: DbAuthentication.Dependecies) {
+		this.loadAdministratorByNameRepository = loadAdministratorByNameRepository;
+		this.hashComparer = hashComparer;
 	}
 
 	async auth(credentials: Authentication.Params): Promise<Authentication.Result> {
@@ -13,6 +15,10 @@ export class DbAuthentication implements Authentication {
 		if (!administrator) {
 			return null;
 		}
+
+		const { password } = credentials;
+		await this.hashComparer.compare({ value: password, hash: administrator.password });
+
 		return "";
 	}
 }
@@ -20,5 +26,6 @@ export class DbAuthentication implements Authentication {
 export namespace DbAuthentication {
 	export interface Dependecies {
 		loadAdministratorByNameRepository: LoadAdministratorByNameRepository;
+		hashComparer: HashComparer;
 	}
 }
