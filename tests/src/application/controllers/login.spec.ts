@@ -1,4 +1,4 @@
-import { Validation, badRequest } from "../../../../src/application/helpers";
+import { Validation, badRequest, unauthorized } from "../../../../src/application/helpers";
 import { Authentication } from "../../../../src/domain";
 import { LoginController } from "../../../../src/application/controllers";
 
@@ -63,5 +63,12 @@ describe("LoginController", () => {
 		const authSpy = jest.spyOn(authenticationStub, "auth");
 		await sut.handle(makeFakeRequest());
 		expect(authSpy).toHaveBeenCalledWith(makeFakeRequest().body);
+	});
+
+	it("Should return 401 if invalid credentials is provided", async () => {
+		const { sut, authenticationStub } = makeSut();
+		jest.spyOn(authenticationStub, "auth").mockResolvedValueOnce(null);
+		const httpResponse = await sut.handle(makeFakeRequest());
+		expect(httpResponse).toEqual(unauthorized());
 	});
 });
