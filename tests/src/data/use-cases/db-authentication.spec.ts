@@ -107,4 +107,11 @@ describe("DbAuthentication", () => {
 		await sut.auth({ password: "any_password" });
 		expect(encryptSpy).toHaveBeenCalledWith("1");
 	});
+
+	it("Should throw if encrypter throws", async () => {
+		const { sut, encrypterStub } = makeSut();
+		jest.spyOn(encrypterStub, "encrypt").mockRejectedValueOnce(new Error());
+		const promise = sut.auth({ password: "any_password" });
+		await expect(promise).rejects.toThrow();
+	});
 });
