@@ -7,9 +7,13 @@ jest.mock("jsonwebtoken", () => ({
 	}
 }));
 
+const makeSut = (): JwtAdapter => {
+	return new JwtAdapter("secret");
+};
+
 describe("Jwt Adapter", () => {
 	it("Should call sign with correct values", () => {
-		const sut = new JwtAdapter("secret");
+		const sut = makeSut();
 		const signSpy = jest.spyOn(jwt, "sign");
 		sut.encrypt("any_id");
 		expect(signSpy).toBeCalledWith({ id: "any_id" }, "secret");
