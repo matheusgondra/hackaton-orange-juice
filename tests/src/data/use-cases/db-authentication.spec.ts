@@ -114,4 +114,10 @@ describe("DbAuthentication", () => {
 		const promise = sut.auth({ password: "any_password" });
 		await expect(promise).rejects.toThrow();
 	});
+
+	it("Should return a token on success", async () => {
+		const { sut } = makeSut();
+		const accessToken = await sut.auth({ password: "any_password" });
+		expect(accessToken).toBe("any_token");
+	});
 });
