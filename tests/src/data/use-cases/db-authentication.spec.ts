@@ -1,4 +1,4 @@
-import { DbAuthentication, HashComparer, LoadAdministratorByNameRepository } from "../../../../src/data";
+import { DbAuthentication, Encrypter, HashComparer, LoadAdministratorByNameRepository } from "../../../../src/data";
 
 const makeLoadAdministratorByNameRepository = (): LoadAdministratorByNameRepository => {
 	class LoadAdministratorByNameRepositoryStub implements LoadAdministratorByNameRepository {
@@ -22,23 +22,36 @@ const makeHashComparerStub = (): HashComparer => {
 	return new HashComparerStub();
 };
 
+const makeEncrypterStub = (): Encrypter => {
+	class EncrypterStub implements Encrypter {
+		async encrypt(value: string): Promise<Encrypter.Result> {
+			return "any_token";
+		}
+	}
+	return new EncrypterStub();
+};
+
 interface SutTypes {
 	sut: DbAuthentication;
 	loadAdministratorByNameRepositoryStub: LoadAdministratorByNameRepository;
 	hashComparerStub: HashComparer;
+	encrypterStub: Encrypter;
 }
 
 const makeSut = (): SutTypes => {
 	const loadAdministratorByNameRepositoryStub = makeLoadAdministratorByNameRepository();
 	const hashComparerStub = makeHashComparerStub();
+	const encrypterStub = makeEncrypterStub();
 	const sut = new DbAuthentication({
 		loadAdministratorByNameRepository: loadAdministratorByNameRepositoryStub,
-		hashComparer: hashComparerStub
+		hashComparer: hashComparerStub,
+		encrypter: encrypterStub
 	});
 	return {
 		sut,
 		loadAdministratorByNameRepositoryStub,
-		hashComparerStub
+		hashComparerStub,
+		encrypterStub
 	};
 };
 
@@ -86,5 +99,12 @@ describe("DbAuthentication", () => {
 		jest.spyOn(hashComparerStub, "compare").mockRejectedValueOnce(new Error());
 		const promise = sut.auth({ password: "any_password" });
 		await expect(promise).rejects.toThrow();
+	});
+
+	it("Should call encrypter with correct value", async () => {
+		const { sut, encrypterStub } = makeSut();
+		const encryptSpy = jest.spyOn(encrypterStub, "encrypt");
+		await sut.auth({ password: "any_password" });
+		expect(encryptSpy).toHaveBeenCalledWith("1");
 	});
 });
