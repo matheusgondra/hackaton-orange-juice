@@ -1,4 +1,4 @@
-import { DbAuthentication, LoadAdministratorByNameRepository } from "../../../../src/data";
+import { DbAuthentication, HashComparer, LoadAdministratorByNameRepository } from "../../../../src/data";
 
 const makeLoadAdministratorByNameRepository = (): LoadAdministratorByNameRepository => {
 	class LoadAdministratorByNameRepositoryStub implements LoadAdministratorByNameRepository {
@@ -13,17 +13,32 @@ const makeLoadAdministratorByNameRepository = (): LoadAdministratorByNameReposit
 	return new LoadAdministratorByNameRepositoryStub();
 };
 
+const makeHashComparerStub = (): HashComparer => {
+	class HashComparerStub implements HashComparer {
+		async compare(values: HashComparer.Params): Promise<HashComparer.Result> {
+			return true;
+		}
+	}
+	return new HashComparerStub();
+};
+
 interface SutTypes {
 	sut: DbAuthentication;
 	loadAdministratorByNameRepositoryStub: LoadAdministratorByNameRepository;
+	hashComparerStub: HashComparer;
 }
 
 const makeSut = (): SutTypes => {
 	const loadAdministratorByNameRepositoryStub = makeLoadAdministratorByNameRepository();
-	const sut = new DbAuthentication({ loadAdministratorByNameRepository: loadAdministratorByNameRepositoryStub });
+	const hashComparerStub = makeHashComparerStub();
+	const sut = new DbAuthentication({
+		loadAdministratorByNameRepository: loadAdministratorByNameRepositoryStub,
+		hashComparer: hashComparerStub
+	});
 	return {
 		sut,
-		loadAdministratorByNameRepositoryStub
+		loadAdministratorByNameRepositoryStub,
+		hashComparerStub
 	};
 };
 
@@ -47,5 +62,15 @@ describe("DbAuthentication", () => {
 		jest.spyOn(loadAdministratorByNameRepositoryStub, "loadByName").mockResolvedValueOnce(null);
 		const accessToken = await sut.auth({ password: "any_password" });
 		expect(accessToken).toBeNull();
+	});
+
+	it("Should call hashComparer with correct values", async () => {
+		const { sut, hashComparerStub } = makeSut();
+		const compareSpy = jest.spyOn(hashComparerStub, "compare");
+		await sut.auth({ password: "any_password" });
+		expect(compareSpy).toHaveBeenCalledWith({
+			value: "any_password",
+			hash: "any_password"
+		});
 	});
 });
