@@ -32,8 +32,12 @@
     "jest": "^29.7.0",
     "lint-staged": "^14.0.1",
     "prettier": "^3.0.3",
+    "prisma": "^5.3.1",
     "sucrase": "^3.34.0",
     "ts-jest": "^29.1.1",
     "typescript": "^5.2.2"
+  },
+  "prisma": {
+	 "schema": "src/infra/db/postgres/prisma/schema.prisma"
   }
 }
