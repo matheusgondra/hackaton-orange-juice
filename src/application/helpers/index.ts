@@ -1,2 +1,2 @@
 export * from "./validators/validation";
-export * from "./http";
+export * from "./http-helpers";

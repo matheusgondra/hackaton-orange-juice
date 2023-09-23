@@ -1,5 +1,5 @@
 import { Authentication } from "../../domain";
-import { Validation, badRequest } from "../helpers";
+import { Validation, badRequest, unauthorized } from "../helpers";
 import { Controller, HttpRequest, HttpResponse } from "../protocols";
 
 export class LoginController implements Controller {
@@ -18,7 +18,10 @@ export class LoginController implements Controller {
 		}
 
 		const { password } = httpRequest.body;
-		await this.authentication.auth({ password });
+		const accessToken = await this.authentication.auth({ password });
+		if (!accessToken) {
+			return unauthorized();
+		}
 
 		return {
 			statusCode: 200,

@@ -6,5 +6,5 @@ export namespace Authentication {
 	export interface Params {
 		password: string;
 	}
-	export type Result = string;
+	export type Result = string | null;
 }
