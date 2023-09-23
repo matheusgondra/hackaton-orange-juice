@@ -73,4 +73,11 @@ describe("DbAuthentication", () => {
 			hash: "any_password"
 		});
 	});
+
+	it("Should return null if hashComparer returns false", async () => {
+		const { sut, hashComparerStub } = makeSut();
+		jest.spyOn(hashComparerStub, "compare").mockResolvedValueOnce(false);
+		const accessToken = await sut.auth({ password: "any_password" });
+		expect(accessToken).toBeNull();
+	});
 });
