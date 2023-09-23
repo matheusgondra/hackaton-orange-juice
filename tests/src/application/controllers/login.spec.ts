@@ -1,4 +1,4 @@
-import { Validation, badRequest, unauthorized } from "../../../../src/application/helpers";
+import { Validation, badRequest, serverError, unauthorized } from "../../../../src/application/helpers";
 import { Authentication } from "../../../../src/domain";
 import { LoginController } from "../../../../src/application/controllers";
 
@@ -70,5 +70,12 @@ describe("LoginController", () => {
 		jest.spyOn(authenticationStub, "auth").mockResolvedValueOnce(null);
 		const httpResponse = await sut.handle(makeFakeRequest());
 		expect(httpResponse).toEqual(unauthorized());
+	});
+
+	it("Should return 500 if authentication throws", async () => {
+		const { sut, authenticationStub } = makeSut();
+		jest.spyOn(authenticationStub, "auth").mockRejectedValueOnce(new Error());
+		const httpResponse = await sut.handle(makeFakeRequest());
+		expect(httpResponse).toEqual(serverError(new Error()));
 	});
 });
