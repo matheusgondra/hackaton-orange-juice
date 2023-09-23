@@ -1,4 +1,5 @@
 import { Validation, badRequest } from "../../../../src/application/helpers";
+import { Authentication } from "../../../../src/domain";
 import { LoginController } from "../../../../src/application/controllers";
 
 const makeValidationStub = (): Validation => {
@@ -10,17 +11,29 @@ const makeValidationStub = (): Validation => {
 	return new ValidationStub();
 };
 
+const makeAuthenticationStub = (): Authentication => {
+	class AuthenticationStub implements Authentication {
+		async auth(credentials: Authentication.Params): Promise<Authentication.Result> {
+			return "access_token";
+		}
+	}
+	return new AuthenticationStub();
+};
+
 interface SutTypes {
 	sut: LoginController;
 	validationStub: Validation;
+	authenticationStub: Authentication;
 }
 
 const makeSut = (): SutTypes => {
 	const validationStub = makeValidationStub();
-	const sut = new LoginController({ validation: validationStub });
+	const authenticationStub = makeAuthenticationStub();
+	const sut = new LoginController({ validation: validationStub, authentication: authenticationStub });
 	return {
 		sut,
-		validationStub
+		validationStub,
+		authenticationStub
 	};
 };
 
@@ -43,5 +56,12 @@ describe("LoginController", () => {
 		jest.spyOn(validationStub, "validate").mockReturnValueOnce(new Error());
 		const httpResponse = await sut.handle(makeFakeRequest());
 		expect(httpResponse).toEqual(badRequest(new Error()));
+	});
+
+	it("Should call authentication with correct values", async () => {
+		const { sut, authenticationStub } = makeSut();
+		const authSpy = jest.spyOn(authenticationStub, "auth");
+		await sut.handle(makeFakeRequest());
+		expect(authSpy).toHaveBeenCalledWith(makeFakeRequest().body);
 	});
 });
