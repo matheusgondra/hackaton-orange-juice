@@ -1,5 +1,5 @@
 import { Authentication } from "../../domain";
-import { Validation, badRequest, unauthorized } from "../helpers";
+import { Validation, badRequest, serverError, unauthorized } from "../helpers";
 import { Controller, HttpRequest, HttpResponse } from "../protocols";
 
 export class LoginController implements Controller {
@@ -12,21 +12,25 @@ export class LoginController implements Controller {
 	}
 
 	async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
-		const error = this.validation.validate(httpRequest);
-		if (error) {
-			return badRequest(error);
-		}
+		try {
+			const error = this.validation.validate(httpRequest);
+			if (error) {
+				return badRequest(error);
+			}
 
-		const { password } = httpRequest.body;
-		const accessToken = await this.authentication.auth({ password });
-		if (!accessToken) {
-			return unauthorized();
-		}
+			const { password } = httpRequest.body;
+			const accessToken = await this.authentication.auth({ password });
+			if (!accessToken) {
+				return unauthorized();
+			}
 
-		return {
-			statusCode: 200,
-			body: {}
-		};
+			return {
+				statusCode: 200,
+				body: {}
+			};
+		} catch (error) {
+			return serverError(error as Error);
+		}
 	}
 }
 
