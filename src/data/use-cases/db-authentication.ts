@@ -9,8 +9,11 @@ export class DbAuthentication implements Authentication {
 	}
 
 	async auth(credentials: Authentication.Params): Promise<Authentication.Result> {
-		await this.loadAdministratorByNameRepository.loadByName("Administrador");
-		return null;
+		const administrator = await this.loadAdministratorByNameRepository.loadByName("Administrador");
+		if (!administrator) {
+			return null;
+		}
+		return "";
 	}
 }
 

@@ -5,5 +5,5 @@ export interface LoadAdministratorByNameRepository {
 }
 
 export namespace LoadAdministratorByNameRepository {
-	export type Result = AdministratorModel;
+	export type Result = AdministratorModel | null;
 }
