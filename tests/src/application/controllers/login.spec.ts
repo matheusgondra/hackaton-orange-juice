@@ -38,9 +38,7 @@ const makeSut = (): SutTypes => {
 };
 
 const makeFakeRequest = () => ({
-	body: {
-		password: "any_password"
-	}
+	password: "any_password"
 });
 
 describe("LoginController", () => {
@@ -62,7 +60,7 @@ describe("LoginController", () => {
 		const { sut, authenticationStub } = makeSut();
 		const authSpy = jest.spyOn(authenticationStub, "auth");
 		await sut.handle(makeFakeRequest());
-		expect(authSpy).toHaveBeenCalledWith(makeFakeRequest().body);
+		expect(authSpy).toHaveBeenCalledWith(makeFakeRequest());
 	});
 
 	it("Should return 401 if invalid credentials is provided", async () => {

@@ -39,7 +39,7 @@ export const PrismaHelper = {
 		await prisma.administrator.create({
 			data: {
 				name: "Administrador",
-				password: "123456"
+				password: "$2b$12$j49/eKJfSC4J0V0lqDNzkOyrKQ3f5s0I/qxGDSkb4LTsV626CQgPK"
 			}
 		});
 	}

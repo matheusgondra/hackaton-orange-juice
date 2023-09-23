@@ -1,6 +1,6 @@
 import { Authentication } from "../../domain";
 import { Validation, badRequest, serverError, success, unauthorized } from "../helpers";
-import { Controller, HttpRequest, HttpResponse } from "../protocols";
+import { Controller, HttpResponse } from "../protocols";
 
 export class LoginController implements Controller {
 	private readonly validation: Validation;
@@ -11,14 +11,14 @@ export class LoginController implements Controller {
 		this.authentication = authentication;
 	}
 
-	async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
+	async handle(httpRequest: LoginController.Request): Promise<HttpResponse> {
 		try {
 			const error = this.validation.validate(httpRequest);
 			if (error) {
 				return badRequest(error);
 			}
 
-			const { password } = httpRequest.body;
+			const { password } = httpRequest;
 			const accessToken = await this.authentication.auth({ password });
 			if (!accessToken) {
 				return unauthorized();
@@ -35,5 +35,8 @@ export namespace LoginController {
 	export interface Dependecies {
 		validation: Validation;
 		authentication: Authentication;
+	}
+	export interface Request {
+		password: string;
 	}
 }
