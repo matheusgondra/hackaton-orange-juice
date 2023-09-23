@@ -1,0 +1,32 @@
+import { PrismaHelper } from "../../../../helpers/prisma-helper";
+import { AdministratorRepository } from "../../../../../src/infra/db";
+
+const makeSut = (): AdministratorRepository => {
+	return new AdministratorRepository();
+};
+
+describe("AdministratorRepository", () => {
+	beforeEach(() => {
+		PrismaHelper.connect();
+	});
+
+	afterEach(() => {
+		PrismaHelper.disconnect();
+	});
+
+	describe("loadByName()", () => {
+		beforeEach(async () => {
+			await PrismaHelper.createAdm();
+		});
+
+		it("Should return an administrator on success", async () => {
+			const sut = makeSut();
+			const administrator = await sut.loadByName("Administrador");
+			expect(administrator).toEqual({
+				id: expect.any(Number),
+				name: "Administrador",
+				password: expect.any(String)
+			});
+		});
+	});
+});
