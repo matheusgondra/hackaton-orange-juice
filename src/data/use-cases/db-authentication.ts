@@ -24,9 +24,8 @@ export class DbAuthentication implements Authentication {
 			return null;
 		}
 
-		await this.encrypter.encrypt(String(administrator.id));
-
-		return "";
+		const accessToken = await this.encrypter.encrypt(String(administrator.id));
+		return accessToken;
 	}
 }
 
