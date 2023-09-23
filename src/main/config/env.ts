@@ -1,9 +1,14 @@
-const defineEnv = (env: string): string => {
-	const newEnv = process.env[env];
-	if (!newEnv) {
-		throw new Error(`Missing env ${env}`);
+import { config } from "dotenv";
+
+config();
+
+const defineEnv = (envName: string) => {
+	const normalizedEnv = envName.toUpperCase();
+	const env = process.env[normalizedEnv];
+	if (env) {
+		return env;
 	}
-	return newEnv;
+	throw new Error(`Environment variable ${normalizedEnv} is not defined`);
 };
 
 export default {
