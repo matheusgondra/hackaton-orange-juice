@@ -1,22 +1,40 @@
 import { Validation } from "../../../../src/application/helpers";
 import { LoginController } from "../../../../src/application/controllers";
 
+const makeValidationStub = (): Validation => {
+	class ValidationStub implements Validation {
+		validate(input: Validation.Params): Validation.Result {
+			return null;
+		}
+	}
+	return new ValidationStub();
+};
+
+interface SutTypes {
+	sut: LoginController;
+	validationStub: Validation;
+}
+
+const makeSut = (): SutTypes => {
+	const validationStub = makeValidationStub();
+	const sut = new LoginController({ validation: validationStub });
+	return {
+		sut,
+		validationStub
+	};
+};
+
+const makeFakeRequest = () => ({
+	body: {
+		password: "any_password"
+	}
+});
+
 describe("LoginController", () => {
 	it("Should call validation with correct values", async () => {
-		class ValidationStub implements Validation {
-			validate(input: Validation.Params): Validation.Result {
-				return null;
-			}
-		}
-		const validationStub = new ValidationStub();
-		const sut = new LoginController({ validation: validationStub });
+		const { sut, validationStub } = makeSut();
 		const validateSpy = jest.spyOn(validationStub, "validate");
-		const httpRequest = {
-			body: {
-				password: "any_password"
-			}
-		};
-		await sut.handle(httpRequest);
-		expect(validateSpy).toHaveBeenCalledWith(httpRequest);
+		await sut.handle(makeFakeRequest());
+		expect(validateSpy).toHaveBeenCalledWith(makeFakeRequest());
 	});
 });
