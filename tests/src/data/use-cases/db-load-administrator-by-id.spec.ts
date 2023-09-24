@@ -41,4 +41,11 @@ describe("DbLoadAdministratorById", () => {
 		const promise = sut.loadById(1);
 		await expect(promise).rejects.toThrow();
 	});
+
+	it("Should return null if loadAdministratorByIdRepository returns null", async () => {
+		const { sut, loadAdministratorByIdRepositoryStub } = makeSut();
+		jest.spyOn(loadAdministratorByIdRepositoryStub, "loadById").mockResolvedValueOnce(null);
+		const administrator = await sut.loadById(1);
+		expect(administrator).toBeNull();
+	});
 });
