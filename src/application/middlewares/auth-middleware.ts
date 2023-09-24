@@ -1,12 +1,15 @@
 import { Decrypter } from "../../data";
+import { LoadAdministratorById } from "../../domain";
 import { unauthorized } from "../helpers";
 import { HttpResponse, Middleware } from "../protocols";
 
 export class AuthMiddleware implements Middleware {
 	private readonly decrypter: Decrypter;
+	private readonly loadByAdministratorById: LoadAdministratorById;
 
-	constructor({ decrypter }: AuthMiddleware.Dependencies) {
+	constructor({ decrypter, loadAdministratorById }: AuthMiddleware.Dependencies) {
 		this.decrypter = decrypter;
+		this.loadByAdministratorById = loadAdministratorById;
 	}
 
 	async handle(request: AuthMiddleware.Request): Promise<HttpResponse> {
@@ -15,10 +18,13 @@ export class AuthMiddleware implements Middleware {
 			return unauthorized();
 		}
 
-		const token = await this.decrypter.decrypt(accessToken);
+		const formatedAccessToken = accessToken.replace("Bearer ", "");
+		const token = await this.decrypter.decrypt(formatedAccessToken);
 		if (!token) {
 			return unauthorized();
 		}
+
+		await this.loadByAdministratorById.loadById(Number(token.id));
 
 		return {
 			statusCode: 200,
@@ -30,6 +36,7 @@ export class AuthMiddleware implements Middleware {
 export namespace AuthMiddleware {
 	export interface Dependencies {
 		decrypter: Decrypter;
+		loadAdministratorById: LoadAdministratorById;
 	}
 	export interface Request {
 		accessToken?: string;
