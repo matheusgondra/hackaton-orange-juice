@@ -7,7 +7,7 @@ const makeAddEventRepository = (): AddEventRepository => {
 			return {
 				id: 1,
 				name: "any_name",
-				date: new Date(),
+				date: new Date("2021-01-01"),
 				hour: "any_hour",
 				image: "any_image",
 				description: "any_description",
@@ -64,5 +64,11 @@ describe("DbAddEvent", () => {
 		jest.spyOn(addEventRepositoryStub, "add").mockRejectedValueOnce(new Error());
 		const promise = sut.add(makeFakeData());
 		await expect(promise).rejects.toThrow();
+	});
+
+	it("Should return an event on success", async () => {
+		const { sut } = makeSut();
+		const event = await sut.add(makeFakeData());
+		expect(event).toEqual({ ...makeFakeData(), id: 1 });
 	});
 });
