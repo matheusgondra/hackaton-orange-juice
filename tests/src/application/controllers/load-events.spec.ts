@@ -1,4 +1,5 @@
 import { LoadEventsController } from "../../../../src/application/controllers";
+import { success } from "../../../../src/application/helpers";
 import { LoadEvents } from "../../../../src/domain";
 
 const makeFakeData = (): LoadEvents.Result => [
@@ -61,5 +62,11 @@ describe("LoadEventsController", () => {
 		const loadSpy = jest.spyOn(loadEventsStub, "load");
 		await sut.handle();
 		expect(loadSpy).toHaveBeenCalled();
+	});
+
+	it("Should return 200 on success", async () => {
+		const { sut } = makeSut();
+		const response = await sut.handle();
+		expect(response).toEqual(success(makeFakeData()));
 	});
 });
