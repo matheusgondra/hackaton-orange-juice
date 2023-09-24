@@ -1,4 +1,4 @@
-import { Validation } from "../helpers";
+import { Validation, badRequest } from "../helpers";
 import { Controller, HttpResponse } from "../protocols";
 
 export class EventRegisterController implements Controller {
@@ -9,7 +9,10 @@ export class EventRegisterController implements Controller {
 	}
 
 	async handle(request: any): Promise<HttpResponse> {
-		this.validation.validate(request);
+		const error = this.validation.validate(request);
+		if (error) {
+			return badRequest(error);
+		}
 
 		return {
 			statusCode: 200,
