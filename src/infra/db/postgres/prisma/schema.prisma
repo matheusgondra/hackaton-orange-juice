@@ -19,21 +19,23 @@ model Administrator {
 }
 
 model Category {
-   id   Int    @id @default(autoincrement())
-   name String @unique
+   id            Int             @id @default(autoincrement())
+   name          String          @unique
+   EventCategory EventCategory[]
 
    @@map("category")
 }
 
 model Event {
-   id          Int      @id @default(autoincrement())
-   name        String
-   date        DateTime
-   hour        DateTime @db.Time()
-   image       String
-   description String
-   address     Address  @relation(fields: [address_id], references: [id])
-   address_id  Int
+   id            Int             @id @default(autoincrement())
+   name          String
+   date          DateTime
+   hour          DateTime        @db.Time()
+   image         String
+   description   String
+   address       Address         @relation(fields: [address_id], references: [id])
+   address_id    Int
+   EventCategory EventCategory[]
 
    @@map("events")
 }
@@ -48,4 +50,14 @@ model Address {
    Event    Event[]
 
    @@map("address")
+}
+
+model EventCategory {
+   id          Int      @id @default(autoincrement())
+   event       Event    @relation(fields: [event_id], references: [id])
+   event_id    Int
+   category    Category @relation(fields: [category_id], references: [id])
+   category_id Int
+
+   @@map("event_category")
 }
