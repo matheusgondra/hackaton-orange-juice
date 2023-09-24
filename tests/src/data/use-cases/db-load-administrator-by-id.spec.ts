@@ -48,4 +48,14 @@ describe("DbLoadAdministratorById", () => {
 		const administrator = await sut.loadById(1);
 		expect(administrator).toBeNull();
 	});
+
+	it("Should return an administrator on success", async () => {
+		const { sut } = makeSut();
+		const administrator = await sut.loadById(1);
+		expect(administrator).toEqual({
+			id: 1,
+			name: "Administrador",
+			password: "hashed_password"
+		});
+	});
 });
