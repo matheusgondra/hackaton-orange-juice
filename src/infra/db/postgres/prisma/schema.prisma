@@ -24,3 +24,28 @@ model Category {
 
    @@map("category")
 }
+
+model Event {
+   id          Int      @id @default(autoincrement())
+   name        String
+   date        DateTime
+   hour        DateTime @db.Time()
+   image       String
+   description String
+   address     Address  @relation(fields: [address_id], references: [id])
+   address_id  Int
+
+   @@map("events")
+}
+
+model Address {
+   id       Int     @id @default(autoincrement())
+   street   String
+   number   Int
+   city     String
+   state    String
+   zip_code String
+   Event    Event[]
+
+   @@map("address")
+}
