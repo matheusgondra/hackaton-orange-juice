@@ -24,7 +24,10 @@ export class AuthMiddleware implements Middleware {
 			return unauthorized();
 		}
 
-		await this.loadByAdministratorById.loadById(Number(token.id));
+		const isExist = await this.loadByAdministratorById.loadById(Number(token.id));
+		if (!isExist) {
+			return unauthorized();
+		}
 
 		return {
 			statusCode: 200,
