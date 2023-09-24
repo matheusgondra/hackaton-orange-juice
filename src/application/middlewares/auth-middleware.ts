@@ -15,7 +15,10 @@ export class AuthMiddleware implements Middleware {
 			return unauthorized();
 		}
 
-		await this.decrypter.decrypt(accessToken);
+		const token = await this.decrypter.decrypt(accessToken);
+		if (!token) {
+			return unauthorized();
+		}
 
 		return {
 			statusCode: 200,

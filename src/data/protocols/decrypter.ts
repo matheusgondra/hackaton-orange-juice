@@ -3,5 +3,5 @@ export interface Decrypter {
 }
 
 export namespace Decrypter {
-	export type Result = string;
+	export type Result = string | null;
 }
