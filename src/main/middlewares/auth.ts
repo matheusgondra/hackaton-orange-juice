@@ -1,4 +1,4 @@
 import { adaptMiddleware } from "../adapters";
-import { makeAuthMiddleware } from "../factories/middlewares/auth-middleware-factory";
+import { makeAuthMiddleware } from "../factories";
 
 export const auth = adaptMiddleware(makeAuthMiddleware());
