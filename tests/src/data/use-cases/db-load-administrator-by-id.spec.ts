@@ -34,4 +34,11 @@ describe("DbLoadAdministratorById", () => {
 		await sut.loadById(1);
 		expect(loadByIdSpy).toBeCalledWith(1);
 	});
+
+	it("Should throw if loadAdministratorByIdRepository throws", async () => {
+		const { sut, loadAdministratorByIdRepositoryStub } = makeSut();
+		jest.spyOn(loadAdministratorByIdRepositoryStub, "loadById").mockRejectedValueOnce(new Error());
+		const promise = sut.loadById(1);
+		await expect(promise).rejects.toThrow();
+	});
 });
