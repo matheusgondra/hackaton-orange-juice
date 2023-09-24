@@ -1,4 +1,5 @@
 import { LoadEvents } from "../../domain";
+import { success } from "../helpers";
 import { Controller, HttpResponse } from "../protocols";
 
 export class LoadEventsController implements Controller {
@@ -9,12 +10,8 @@ export class LoadEventsController implements Controller {
 	}
 
 	async handle(): Promise<HttpResponse> {
-		await this.loadEvents.load();
-
-		return {
-			statusCode: 200,
-			body: ""
-		};
+		const events = await this.loadEvents.load();
+		return success(events);
 	}
 }
 
