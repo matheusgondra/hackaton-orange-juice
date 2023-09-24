@@ -25,6 +25,12 @@ describe("AdministratorRepository", () => {
 				password: expect.any(String)
 			});
 		});
+
+		it("Should return null if administrator not found", async () => {
+			const sut = makeSut();
+			const administrator = await sut.loadByName("Invalid name");
+			expect(administrator).toBeNull();
+		});
 	});
 
 	describe("loadById()", () => {
