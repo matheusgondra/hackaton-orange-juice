@@ -1,27 +1,47 @@
 import { unauthorized } from "../../../../src/application/helpers";
 import { AuthMiddleware } from "../../../../src/application/middlewares";
 import { Decrypter } from "../../../../src/data";
+import { LoadAdministratorById } from "../../../../src/domain";
 
 const makeDecrypterStub = (): Decrypter => {
+	interface IDecrypt {
+		id: string;
+	}
 	class DecrypterStub implements Decrypter {
-		async decrypt(cipherText: string): Promise<string> {
-			return "token";
+		async decrypt(cipherText: string): Promise<IDecrypt> {
+			return { id: "1" };
 		}
 	}
 	return new DecrypterStub();
 };
 
+const makeLoadAdministratorByIdStub = (): LoadAdministratorById => {
+	class LoadAdministratorByIdStub implements LoadAdministratorById {
+		async loadById(id: number): Promise<LoadAdministratorById.Result> {
+			return {
+				id: 1,
+				name: "Administrador",
+				password: "any_password"
+			};
+		}
+	}
+	return new LoadAdministratorByIdStub();
+};
+
 interface SutTypes {
 	sut: AuthMiddleware;
 	decrypterStub: Decrypter;
+	loadAdministratorByIdStub: LoadAdministratorById;
 }
 
 const makeSut = (): SutTypes => {
 	const decrypterStub = makeDecrypterStub();
-	const sut = new AuthMiddleware({ decrypter: decrypterStub });
+	const loadAdministratorByIdStub = makeLoadAdministratorByIdStub();
+	const sut = new AuthMiddleware({ decrypter: decrypterStub, loadAdministratorById: loadAdministratorByIdStub });
 	return {
 		sut,
-		decrypterStub
+		decrypterStub,
+		loadAdministratorByIdStub
 	};
 };
 
@@ -51,5 +71,15 @@ describe("AuthMiddleware", () => {
 		};
 		const httpResponse = await sut.handle(request);
 		expect(httpResponse).toEqual(unauthorized());
+	});
+
+	it("Should call loadAdministratorById with correct value", async () => {
+		const { sut, loadAdministratorByIdStub } = makeSut();
+		const loadByIdSpy = jest.spyOn(loadAdministratorByIdStub, "loadById");
+		const request = {
+			accessToken: "any_token"
+		};
+		await sut.handle(request);
+		expect(loadByIdSpy).toBeCalledWith(1);
 	});
 });
