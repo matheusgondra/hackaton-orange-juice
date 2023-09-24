@@ -46,7 +46,7 @@ const makeSut = (): SutTypes => {
 };
 
 describe("AuthMiddleware", () => {
-	it("Should return 403 if no access-token exists in headers", async () => {
+	it("Should return 401 if no access-token exists in headers", async () => {
 		const { sut } = makeSut();
 		const request = {};
 		const httpResponse = await sut.handle(request);
@@ -63,7 +63,7 @@ describe("AuthMiddleware", () => {
 		expect(decryptSpy).toBeCalledWith("any_token");
 	});
 
-	it("Should return 403 if decrypter returns null", async () => {
+	it("Should return 401 if decrypter returns null", async () => {
 		const { sut, decrypterStub } = makeSut();
 		jest.spyOn(decrypterStub, "decrypt").mockResolvedValueOnce(null);
 		const request = {
@@ -81,5 +81,15 @@ describe("AuthMiddleware", () => {
 		};
 		await sut.handle(request);
 		expect(loadByIdSpy).toBeCalledWith(1);
+	});
+
+	it("Should return 401 if loadAdministratorById returns null", async () => {
+		const { sut, loadAdministratorByIdStub } = makeSut();
+		jest.spyOn(loadAdministratorByIdStub, "loadById").mockResolvedValueOnce(null);
+		const request = {
+			accessToken: "any_token"
+		};
+		const httpResponse = await sut.handle(request);
+		expect(httpResponse).toEqual(unauthorized());
 	});
 });
