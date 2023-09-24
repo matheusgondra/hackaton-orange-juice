@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "events" ALTER COLUMN "hour" SET DATA TYPE TEXT;

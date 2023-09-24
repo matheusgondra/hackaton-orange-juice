@@ -30,7 +30,7 @@ model Event {
    id            Int             @id @default(autoincrement())
    name          String
    date          DateTime
-   hour          DateTime        @db.Time()
+   hour          String
    image         String
    description   String
    address       Address         @relation(fields: [address_id], references: [id])

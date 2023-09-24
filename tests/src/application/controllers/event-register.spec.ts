@@ -1,4 +1,4 @@
-import { Validation, badRequest, conflict, created } from "../../../../src/application/helpers";
+import { Validation, badRequest, conflict, created, noContent } from "../../../../src/application/helpers";
 import { EventRegisterController } from "../../../../src/application/controllers";
 import { AddEvent } from "../../../../src/domain";
 
@@ -14,20 +14,7 @@ const makeValitionStub = (): Validation => {
 const makeAddEventStub = (): AddEvent => {
 	class AddEventStub implements AddEvent {
 		async add(event: AddEvent.Params): Promise<AddEvent.Result> {
-			return {
-				id: 1,
-				name: "any_name",
-				date: new Date("2021-01-01"),
-				hour: "any_hour",
-				image: "any_image",
-				description: "any_description",
-				categories: ["any_category", "other_category"],
-				street: "any_street",
-				number: 1,
-				city: "any_city",
-				state: "any_state",
-				cep: "any_cep"
-			};
+			return true;
 		}
 	}
 	return new AddEventStub();
@@ -88,7 +75,7 @@ describe("EventRegisterController", () => {
 
 	it("Should return 409 if addEvent return null", async () => {
 		const { sut, addEventStub } = makeSut();
-		jest.spyOn(addEventStub, "add").mockResolvedValueOnce(null);
+		jest.spyOn(addEventStub, "add").mockResolvedValueOnce(false);
 		const httpResponse = await sut.handle(makeFakeRequest());
 		expect(httpResponse).toEqual(conflict());
 	});
@@ -96,6 +83,6 @@ describe("EventRegisterController", () => {
 	it("Should return 201 if addEvent return an event", async () => {
 		const { sut } = makeSut();
 		const httpResponse = await sut.handle(makeFakeRequest());
-		expect(httpResponse).toEqual(created({ ...makeFakeRequest(), id: expect.any(Number) }));
+		expect(httpResponse).toEqual(noContent());
 	});
 });

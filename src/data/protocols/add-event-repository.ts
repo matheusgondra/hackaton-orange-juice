@@ -16,18 +16,5 @@ export namespace AddEventRepository {
 		state: string;
 		cep: string;
 	}
-	export type Result = {
-		id: number;
-		name: string;
-		date: Date;
-		hour: string;
-		image: string;
-		description: string;
-		categories: string[];
-		street: string;
-		number: number;
-		city: string;
-		state: string;
-		cep: string;
-	} | null;
+	export type Result = boolean;
 }

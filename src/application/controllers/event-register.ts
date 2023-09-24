@@ -1,5 +1,5 @@
 import { AddEvent } from "../../domain";
-import { Validation, badRequest, conflict, created, success } from "../helpers";
+import { Validation, badRequest, conflict, created, noContent, success } from "../helpers";
 import { Controller, HttpResponse } from "../protocols";
 
 export class EventRegisterController implements Controller {
@@ -21,7 +21,7 @@ export class EventRegisterController implements Controller {
 		if (!newEvent) {
 			return conflict();
 		}
-		return created(newEvent);
+		return noContent();
 	}
 }
 
