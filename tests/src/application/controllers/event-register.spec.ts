@@ -1,4 +1,4 @@
-import { Validation } from "../../../../src/application/helpers";
+import { Validation, badRequest } from "../../../../src/application/helpers";
 import { EventRegisterController } from "../../../../src/application/controllers";
 
 const makeValitionStub = (): Validation => {
@@ -44,5 +44,12 @@ describe("EventRegisterController", () => {
 		const validateSpy = jest.spyOn(validationStub, "validate");
 		await sut.handle(makeFakeRequest());
 		expect(validateSpy).toHaveBeenCalledWith(makeFakeRequest());
+	});
+
+	it("Should return 400 if validation return error", async () => {
+		const { sut, validationStub } = makeSut();
+		jest.spyOn(validationStub, "validate").mockReturnValueOnce(new Error());
+		const httpResponse = await sut.handle(makeFakeRequest());
+		expect(httpResponse).toEqual(badRequest(new Error()));
 	});
 });
