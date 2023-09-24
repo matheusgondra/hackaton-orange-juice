@@ -17,7 +17,7 @@ export namespace AddEvent {
 		cep: string;
 	}
 	export type Result = {
-		id: string;
+		id: number;
 		name: string;
 		date: Date;
 		hour: string;
