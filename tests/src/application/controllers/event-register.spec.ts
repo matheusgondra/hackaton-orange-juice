@@ -1,4 +1,4 @@
-import { Validation, badRequest } from "../../../../src/application/helpers";
+import { Validation, badRequest, conflict, success } from "../../../../src/application/helpers";
 import { EventRegisterController } from "../../../../src/application/controllers";
 import { AddEvent } from "../../../../src/domain";
 
@@ -71,5 +71,12 @@ describe("EventRegisterController", () => {
 		const addSpy = jest.spyOn(addEventStub, "add");
 		await sut.handle(makeFakeRequest());
 		expect(addSpy).toHaveBeenCalledWith(makeFakeRequest());
+	});
+
+	it("Should return 409 if addEvent return null", async () => {
+		const { sut, addEventStub } = makeSut();
+		jest.spyOn(addEventStub, "add").mockResolvedValueOnce(null);
+		const httpResponse = await sut.handle(makeFakeRequest());
+		expect(httpResponse).toEqual(conflict());
 	});
 });
