@@ -58,4 +58,11 @@ describe("DbAddEvent", () => {
 		await sut.add(makeFakeData());
 		expect(addSpy).toHaveBeenCalledWith(makeFakeData());
 	});
+
+	it("Should throw if addEventRepository throws", async () => {
+		const { sut, addEventRepositoryStub } = makeSut();
+		jest.spyOn(addEventRepositoryStub, "add").mockRejectedValueOnce(new Error());
+		const promise = sut.add(makeFakeData());
+		await expect(promise).rejects.toThrow();
+	});
 });
