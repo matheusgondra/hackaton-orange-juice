@@ -1,5 +1,5 @@
 import { LoadEventsController } from "../../../../src/application/controllers";
-import { success } from "../../../../src/application/helpers";
+import { serverError, success } from "../../../../src/application/helpers";
 import { LoadEvents } from "../../../../src/domain";
 
 const makeFakeData = (): LoadEvents.Result => [
@@ -68,5 +68,14 @@ describe("LoadEventsController", () => {
 		const { sut } = makeSut();
 		const response = await sut.handle();
 		expect(response).toEqual(success(makeFakeData()));
+	});
+
+	it("Should return 500 if loadEvents throws", async () => {
+		const { sut, loadEventsStub } = makeSut();
+		jest.spyOn(loadEventsStub, "load").mockImplementationOnce(() => {
+			throw new Error();
+		});
+		const httpResponse = await sut.handle();
+		expect(httpResponse).toEqual(serverError(new Error()));
 	});
 });
