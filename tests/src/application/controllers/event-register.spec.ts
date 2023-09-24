@@ -1,5 +1,6 @@
 import { Validation, badRequest } from "../../../../src/application/helpers";
 import { EventRegisterController } from "../../../../src/application/controllers";
+import { AddEvent } from "../../../../src/domain";
 
 const makeValitionStub = (): Validation => {
 	class ValidationStub implements Validation {
@@ -10,29 +11,41 @@ const makeValitionStub = (): Validation => {
 	return new ValidationStub();
 };
 
+const makeAddEventStub = (): AddEvent => {
+	class AddEventStub implements AddEvent {
+		async add(event: AddEvent.Params): Promise<AddEvent.Result> {
+			return null;
+		}
+	}
+	return new AddEventStub();
+};
+
 interface SutTypes {
 	sut: EventRegisterController;
 	validationStub: Validation;
+	addEventStub: AddEvent;
 }
 
 const makeSut = (): SutTypes => {
 	const validationStub = makeValitionStub();
-	const sut = new EventRegisterController({ validation: validationStub });
+	const addEventStub = makeAddEventStub();
+	const sut = new EventRegisterController({ validation: validationStub, addEvent: addEventStub });
 	return {
 		sut,
-		validationStub
+		validationStub,
+		addEventStub
 	};
 };
 
 const makeFakeRequest = () => ({
 	name: "any_name",
-	date: "any_date",
+	date: new Date("2021-01-01"),
 	hour: "any_hour",
 	image: "any_image",
 	description: "any_description",
-	categories: ["any_category"],
+	categories: ["any_category", "other_category"],
 	street: "any_street",
-	number: "any_number",
+	number: 1,
 	city: "any_city",
 	state: "any_state",
 	cep: "any_cep"
@@ -51,5 +64,12 @@ describe("EventRegisterController", () => {
 		jest.spyOn(validationStub, "validate").mockReturnValueOnce(new Error());
 		const httpResponse = await sut.handle(makeFakeRequest());
 		expect(httpResponse).toEqual(badRequest(new Error()));
+	});
+
+	it("Should call addEvent with correct values", async () => {
+		const { sut, addEventStub } = makeSut();
+		const addSpy = jest.spyOn(addEventStub, "add");
+		await sut.handle(makeFakeRequest());
+		expect(addSpy).toHaveBeenCalledWith(makeFakeRequest());
 	});
 });
