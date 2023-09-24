@@ -6,22 +6,31 @@ const makeSut = (): AdministratorRepository => {
 };
 
 describe("AdministratorRepository", () => {
-	beforeEach(() => {
-		PrismaHelper.connect();
+	beforeEach(async () => {
+		await PrismaHelper.connect();
+		await PrismaHelper.createAdm();
 	});
 
-	afterEach(() => {
-		PrismaHelper.disconnect();
+	afterEach(async () => {
+		await PrismaHelper.disconnect();
 	});
 
 	describe("loadByName()", () => {
-		beforeEach(async () => {
-			await PrismaHelper.createAdm();
-		});
-
 		it("Should return an administrator on success", async () => {
 			const sut = makeSut();
 			const administrator = await sut.loadByName("Administrador");
+			expect(administrator).toEqual({
+				id: expect.any(Number),
+				name: "Administrador",
+				password: expect.any(String)
+			});
+		});
+	});
+
+	describe("loadById()", () => {
+		it("Should return an administrator on success", async () => {
+			const sut = makeSut();
+			const administrator = await sut.loadById(1);
 			expect(administrator).toEqual({
 				id: expect.any(Number),
 				name: "Administrador",
