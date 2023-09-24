@@ -17,3 +17,10 @@ model Administrator {
 
    @@map("administrator")
 }
+
+model Category {
+   id   Int    @id @default(autoincrement())
+   name String @unique
+
+   @@map("category")
+}

@@ -7,6 +7,7 @@
     "start": "node dist/main/server.js",
     "dev": "sucrase-node src/main/server.ts",
     "build": "tsc -p tsconfig-build.json",
+	 "seed": "sucrase-node src/infra/db/postgres/prisma/seeds/category-seed.ts",
     "migrate": "prisma migrate dev",
     "migrate:deploy": "prisma migrate deploy",
     "deploy": "yarn build && yarn migrate:deploy && yarn start",
@@ -51,7 +52,8 @@
     "uuid": "^9.0.1"
   },
   "prisma": {
-    "schema": "src/infra/db/postgres/prisma/schema.prisma"
+    "schema": "src/infra/db/postgres/prisma/schema.prisma",
+	 "seed": "sucrase-node src/infra/db/postgres/prisma/seeds/category-seed.ts"
   },
   "dependencies": {
     "@prisma/client": "5.3.1",
