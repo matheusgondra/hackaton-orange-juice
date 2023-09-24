@@ -42,4 +42,14 @@ describe("AuthMiddleware", () => {
 		await sut.handle(request);
 		expect(decryptSpy).toBeCalledWith("any_token");
 	});
+
+	it("Should return 403 if decrypter returns null", async () => {
+		const { sut, decrypterStub } = makeSut();
+		jest.spyOn(decrypterStub, "decrypt").mockResolvedValueOnce(null);
+		const request = {
+			accessToken: "any_token"
+		};
+		const httpResponse = await sut.handle(request);
+		expect(httpResponse).toEqual(unauthorized());
+	});
 });
