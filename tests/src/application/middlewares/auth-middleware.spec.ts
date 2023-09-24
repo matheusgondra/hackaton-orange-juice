@@ -1,4 +1,4 @@
-import { unauthorized } from "../../../../src/application/helpers";
+import { success, unauthorized } from "../../../../src/application/helpers";
 import { AuthMiddleware } from "../../../../src/application/middlewares";
 import { Decrypter } from "../../../../src/data";
 import { LoadAdministratorById } from "../../../../src/domain";
@@ -91,5 +91,14 @@ describe("AuthMiddleware", () => {
 		};
 		const httpResponse = await sut.handle(request);
 		expect(httpResponse).toEqual(unauthorized());
+	});
+
+	it("Should return 200 if valid credentials is provided", async () => {
+		const { sut } = makeSut();
+		const request = {
+			accessToken: "any_token"
+		};
+		const httpResponse = await sut.handle(request);
+		expect(httpResponse).toEqual(success({ id: 1 }));
 	});
 });
