@@ -1,6 +1,6 @@
 import { Decrypter } from "../../data";
 import { LoadAdministratorById } from "../../domain";
-import { unauthorized } from "../helpers";
+import { success, unauthorized } from "../helpers";
 import { HttpResponse, Middleware } from "../protocols";
 
 export class AuthMiddleware implements Middleware {
@@ -24,15 +24,13 @@ export class AuthMiddleware implements Middleware {
 			return unauthorized();
 		}
 
-		const isExist = await this.loadByAdministratorById.loadById(Number(token.id));
+		const id = Number(token.id);
+		const isExist = await this.loadByAdministratorById.loadById(id);
 		if (!isExist) {
 			return unauthorized();
 		}
 
-		return {
-			statusCode: 200,
-			body: ""
-		};
+		return success({ id });
 	}
 }
 
