@@ -1,5 +1,5 @@
 import { AddEvent } from "../../domain";
-import { Validation, badRequest } from "../helpers";
+import { Validation, badRequest, conflict, success } from "../helpers";
 import { Controller, HttpResponse } from "../protocols";
 
 export class EventRegisterController implements Controller {
@@ -17,11 +17,13 @@ export class EventRegisterController implements Controller {
 			return badRequest(error);
 		}
 
-		await this.addEvent.add(request);
-
+		const newEvent = await this.addEvent.add(request);
+		if (!newEvent) {
+			return conflict();
+		}
 		return {
-			statusCode: 200,
-			body: {}
+			statusCode: 201,
+			body: ""
 		};
 	}
 }

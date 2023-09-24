@@ -11,6 +11,11 @@ export const unauthorized = (): HttpResponse => ({
 	body: new UnauthorizedError()
 });
 
+export const conflict = (): HttpResponse => ({
+	statusCode: 409,
+	body: new Error("The event already exists")
+});
+
 export const serverError = (error: Error): HttpResponse => ({
 	statusCode: 500,
 	body: error
