@@ -21,4 +21,8 @@ describe("Auth Middleware", () => {
 	it("Should return 401 if no authorization header is provided", async () => {
 		await request(app).get("/test_auth").expect(401);
 	});
+
+	it("Should return 401 if authorization header is invalid", async () => {
+		await request(app).get("/test_auth").set("authorization", "invalid_token").expect(401);
+	});
 });
