@@ -9,7 +9,7 @@ export const makeLoginController = (): LoginController => {
 	const secret = env.secret;
 	const encrypter = new JwtAdapter(secret);
 	const salt = Number(env.salt);
-	const hashComparer = new BcryptAdapter({ salt });
+	const hashComparer = new BcryptAdapter(salt);
 	const loadAdministratorByNameRepository = new AdministratorRepository();
 	const authentication = new DbAuthentication(loadAdministratorByNameRepository, hashComparer, encrypter);
 	const validations = [new RequiredFieldValidation("password")];
