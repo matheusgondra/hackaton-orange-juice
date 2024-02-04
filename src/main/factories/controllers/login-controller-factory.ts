@@ -14,5 +14,5 @@ export const makeLoginController = (): LoginController => {
 	const authentication = new DbAuthentication({ encrypter, hashComparer, loadAdministratorByNameRepository });
 	const validations = [new RequiredFieldValidation("password")];
 	const validation = new ValidationComposite(validations);
-	return new LoginController({ authentication, validation });
+	return new LoginController(validation, authentication);
 };

@@ -20,5 +20,5 @@ export const makeEventRegisterController = (): EventRegisterController => {
 	const validation = new ValidationComposite(validations);
 	const addEventRepository = new EventCategoryRepository();
 	const addEvent = new DbAddEvent({ addEventRepository });
-	return new EventRegisterController({ addEvent, validation });
+	return new EventRegisterController(validation, addEvent);
 };
