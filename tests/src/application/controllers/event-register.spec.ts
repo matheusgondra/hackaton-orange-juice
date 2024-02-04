@@ -29,7 +29,7 @@ interface SutTypes {
 const makeSut = (): SutTypes => {
 	const validationStub = makeValitionStub();
 	const addEventStub = makeAddEventStub();
-	const sut = new EventRegisterController({ validation: validationStub, addEvent: addEventStub });
+	const sut = new EventRegisterController(validationStub, addEventStub);
 	return {
 		sut,
 		validationStub,

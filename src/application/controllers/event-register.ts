@@ -3,13 +3,10 @@ import { Validation, badRequest, conflict, created, noContent, success } from ".
 import { Controller, HttpResponse } from "../protocols";
 
 export class EventRegisterController implements Controller {
-	private readonly validation: Validation;
-	private readonly addEvent: AddEvent;
-
-	constructor({ validation, addEvent }: EventRegisterController.Dependencies) {
-		this.validation = validation;
-		this.addEvent = addEvent;
-	}
+	constructor(
+		private readonly validation: Validation,
+		private readonly addEvent: AddEvent
+	) {}
 
 	async handle(request: EventRegisterController.Request): Promise<HttpResponse> {
 		const error = this.validation.validate(request);
@@ -26,10 +23,6 @@ export class EventRegisterController implements Controller {
 }
 
 export namespace EventRegisterController {
-	export interface Dependencies {
-		validation: Validation;
-		addEvent: AddEvent;
-	}
 	export interface Request {
 		name: string;
 		date: Date;
