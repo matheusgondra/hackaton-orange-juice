@@ -42,11 +42,7 @@ const makeSut = (): SutTypes => {
 	const loadAdministratorByNameRepositoryStub = makeLoadAdministratorByNameRepository();
 	const hashComparerStub = makeHashComparerStub();
 	const encrypterStub = makeEncrypterStub();
-	const sut = new DbAuthentication({
-		loadAdministratorByNameRepository: loadAdministratorByNameRepositoryStub,
-		hashComparer: hashComparerStub,
-		encrypter: encrypterStub
-	});
+	const sut = new DbAuthentication(loadAdministratorByNameRepositoryStub, hashComparerStub, encrypterStub);
 	return {
 		sut,
 		loadAdministratorByNameRepositoryStub,

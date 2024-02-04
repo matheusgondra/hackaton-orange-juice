@@ -17,7 +17,7 @@ interface SutTypes {
 
 const makeSut = (): SutTypes => {
 	const addEventRepositoryStub = makeAddEventRepository();
-	const sut = new DbAddEvent({ addEventRepository: addEventRepositoryStub });
+	const sut = new DbAddEvent(addEventRepositoryStub);
 	return {
 		sut,
 		addEventRepositoryStub

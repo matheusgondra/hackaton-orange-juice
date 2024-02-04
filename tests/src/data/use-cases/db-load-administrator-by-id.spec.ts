@@ -20,7 +20,7 @@ interface SutTypes {
 
 const makeSut = (): SutTypes => {
 	const loadAdministratorByIdRepositoryStub = makeLoadAdministratorByIdRepository();
-	const sut = new DbLoadAdministratorById({ loadAdministratorByIdRepository: loadAdministratorByIdRepositoryStub });
+	const sut = new DbLoadAdministratorById(loadAdministratorByIdRepositoryStub);
 	return {
 		sut,
 		loadAdministratorByIdRepositoryStub

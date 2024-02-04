@@ -11,7 +11,7 @@ export const makeLoginController = (): LoginController => {
 	const salt = Number(env.salt);
 	const hashComparer = new BcryptAdapter({ salt });
 	const loadAdministratorByNameRepository = new AdministratorRepository();
-	const authentication = new DbAuthentication({ encrypter, hashComparer, loadAdministratorByNameRepository });
+	const authentication = new DbAuthentication(loadAdministratorByNameRepository, hashComparer, encrypter);
 	const validations = [new RequiredFieldValidation("password")];
 	const validation = new ValidationComposite(validations);
 	return new LoginController(validation, authentication);

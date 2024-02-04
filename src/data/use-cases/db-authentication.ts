@@ -2,15 +2,11 @@ import { Authentication } from "../../domain";
 import { LoadAdministratorByNameRepository, HashComparer, Encrypter } from "../protocols";
 
 export class DbAuthentication implements Authentication {
-	private readonly loadAdministratorByNameRepository: LoadAdministratorByNameRepository;
-	private readonly hashComparer: HashComparer;
-	private readonly encrypter: Encrypter;
-
-	constructor({ loadAdministratorByNameRepository, hashComparer, encrypter }: DbAuthentication.Dependecies) {
-		this.loadAdministratorByNameRepository = loadAdministratorByNameRepository;
-		this.hashComparer = hashComparer;
-		this.encrypter = encrypter;
-	}
+	constructor(
+		private readonly loadAdministratorByNameRepository: LoadAdministratorByNameRepository,
+		private readonly hashComparer: HashComparer,
+		private readonly encrypter: Encrypter
+	) {}
 
 	async auth(credentials: Authentication.Params): Promise<Authentication.Result> {
 		const administrator = await this.loadAdministratorByNameRepository.loadByName("Administrador");
@@ -26,13 +22,5 @@ export class DbAuthentication implements Authentication {
 
 		const accessToken = await this.encrypter.encrypt(String(administrator.id));
 		return accessToken;
-	}
-}
-
-export namespace DbAuthentication {
-	export interface Dependecies {
-		loadAdministratorByNameRepository: LoadAdministratorByNameRepository;
-		hashComparer: HashComparer;
-		encrypter: Encrypter;
 	}
 }
