@@ -4,13 +4,10 @@ import { success, unauthorized } from "../helpers";
 import { HttpResponse, Middleware } from "../protocols";
 
 export class AuthMiddleware implements Middleware {
-	private readonly decrypter: Decrypter;
-	private readonly loadByAdministratorById: LoadAdministratorById;
-
-	constructor({ decrypter, loadAdministratorById }: AuthMiddleware.Dependencies) {
-		this.decrypter = decrypter;
-		this.loadByAdministratorById = loadAdministratorById;
-	}
+	constructor(
+		private readonly decrypter: Decrypter,
+		private readonly loadByAdministratorById: LoadAdministratorById
+	) {}
 
 	async handle(request: AuthMiddleware.Request): Promise<HttpResponse> {
 		const { accessToken } = request;
@@ -35,10 +32,6 @@ export class AuthMiddleware implements Middleware {
 }
 
 export namespace AuthMiddleware {
-	export interface Dependencies {
-		decrypter: Decrypter;
-		loadAdministratorById: LoadAdministratorById;
-	}
 	export interface Request {
 		accessToken?: string;
 	}

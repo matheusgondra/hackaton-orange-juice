@@ -9,5 +9,5 @@ export const makeAuthMiddleware = (): AuthMiddleware => {
 	const decrypter = new JwtAdapter(secret);
 	const loadAdministratorByIdRepository = new AdministratorRepository();
 	const loadAdministratorById = new DbLoadAdministratorById({ loadAdministratorByIdRepository });
-	return new AuthMiddleware({ decrypter, loadAdministratorById });
+	return new AuthMiddleware(decrypter, loadAdministratorById);
 };

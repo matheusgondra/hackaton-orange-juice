@@ -37,7 +37,7 @@ interface SutTypes {
 const makeSut = (): SutTypes => {
 	const decrypterStub = makeDecrypterStub();
 	const loadAdministratorByIdStub = makeLoadAdministratorByIdStub();
-	const sut = new AuthMiddleware({ decrypter: decrypterStub, loadAdministratorById: loadAdministratorByIdStub });
+	const sut = new AuthMiddleware(decrypterStub, loadAdministratorByIdStub);
 	return {
 		sut,
 		decrypterStub,
