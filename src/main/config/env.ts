@@ -13,6 +13,6 @@ const defineEnv = (envName: string) => {
 
 export default {
 	secret: defineEnv("SECRET"),
-	port: defineEnv("PORT"),
-	salt: defineEnv("SALT")
+	port: Number(defineEnv("PORT")),
+	salt: Number(defineEnv("SALT"))
 };
