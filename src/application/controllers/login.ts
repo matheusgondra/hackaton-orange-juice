@@ -3,13 +3,10 @@ import { Validation, badRequest, serverError, success, unauthorized } from "../h
 import { Controller, HttpResponse } from "../protocols";
 
 export class LoginController implements Controller {
-	private readonly validation: Validation;
-	private readonly authentication: Authentication;
-
-	constructor({ validation, authentication }: LoginController.Dependecies) {
-		this.validation = validation;
-		this.authentication = authentication;
-	}
+	constructor(
+		private readonly validation: Validation,
+		private readonly authentication: Authentication
+	) {}
 
 	async handle(httpRequest: LoginController.Request): Promise<HttpResponse> {
 		try {
@@ -32,10 +29,6 @@ export class LoginController implements Controller {
 }
 
 export namespace LoginController {
-	export interface Dependecies {
-		validation: Validation;
-		authentication: Authentication;
-	}
 	export interface Request {
 		password: string;
 	}
