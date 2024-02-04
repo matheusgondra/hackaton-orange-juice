@@ -49,7 +49,7 @@ interface SutTypes {
 
 const makeSut = (): SutTypes => {
 	const loadEventsStub = makeLoadEventsStub();
-	const sut = new LoadEventsController({ loadEvents: loadEventsStub });
+	const sut = new LoadEventsController(loadEventsStub);
 	return {
 		sut,
 		loadEventsStub

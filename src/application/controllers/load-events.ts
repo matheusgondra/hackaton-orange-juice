@@ -3,11 +3,7 @@ import { serverError, success } from "../helpers";
 import { Controller, HttpResponse } from "../protocols";
 
 export class LoadEventsController implements Controller {
-	private readonly loadEvents: LoadEvents;
-
-	constructor({ loadEvents }: LoadEventsController.Dependencies) {
-		this.loadEvents = loadEvents;
-	}
+	constructor(private readonly loadEvents: LoadEvents) {}
 
 	async handle(): Promise<HttpResponse> {
 		try {
@@ -16,11 +12,5 @@ export class LoadEventsController implements Controller {
 		} catch (error) {
 			return serverError(error as Error);
 		}
-	}
-}
-
-export namespace LoadEventsController {
-	export interface Dependencies {
-		loadEvents: LoadEvents;
 	}
 }
